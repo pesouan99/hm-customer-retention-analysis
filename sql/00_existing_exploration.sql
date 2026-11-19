@@ -1,0 +1,36 @@
+-- Q1: 疫情前首购客户总数(样本保留率的分母)
+-- SELECT COUNT(DISTINCT customer_id) AS n_customers
+-- FROM(
+--     SELECT customer_id, MIN(t_dat) AS first_purchase_date
+--     FROM transactions
+--     GROUP BY customer_id
+-- ) t
+-- WHERE first_purchase_date <= '2019-12-15';
+
+-- Q2: 首购月度分布(检查左截断 / 开业尖峰)
+-- 内层:1.36M 客户,每人算出 first_purchase_date(还是 MIN(t_dat) GROUP BY customer_id)
+-- 外层:拿到这 110 万人(先过滤掉 2019-12-15 之后的),按首购月分桶,数每桶几个人
+-- SELECT date_trunc('month', first_purchase_date) AS first_month,
+--          COUNT(DISTINCT customer_id) AS n_customers
+-- FROM(
+--     SELECT customer_id, MIN(t_dat) AS first_purchase_date
+--     FROM transactions
+--     GROUP BY customer_id
+-- ) t
+-- WHERE first_purchase_date <= '2019-12-15'
+-- GROUP BY first_month
+-- ORDER BY first_month;
+
+--Q3: 开业尖峰，按日查看
+-- SELECT date_trunc('day', first_purchase_date) AS first_month,
+--          COUNT(DISTINCT customer_id) AS n_customers
+-- FROM(
+--     SELECT customer_id, MIN(t_dat) AS first_purchase_date
+--     FROM transactions
+--     GROUP BY customer_id
+-- ) t
+-- WHERE first_purchase_date <= '2018-9-30'
+-- GROUP BY first_month
+-- ORDER BY first_month;
+
+-- Q4： 数据校验
